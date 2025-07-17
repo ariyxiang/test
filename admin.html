@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Tandai Jadwal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f8fa;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .subject-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      background: hsl(228, 85%, 63%);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: hsl(228, 85%, 53%);
+    }
+  </style>
+</head>
+<body>
+  <h1>Panel Admin - Tandai Pelajaran</h1>
+  <form id="markForm">
+  <label for="day">Pilih Hari:</label>
+  <select id="day" name="day" required>
+    <option value="Senin">Senin</option>
+    <option value="Selasa">Selasa</option>
+    <option value="Rabu">Rabu</option>
+    <option value="Kamis">Kamis</option>
+    <option value="Jumat">Jumat</option>
+  </select>
+
+  <div class="subject-list">
+    <label><input type="checkbox" value="Bahasa Inggris"> Bahasa Inggris</label>
+    <label><input type="checkbox" value="Bahasa Indonesia"> Bahasa Indonesia</label>
+    <label><input type="checkbox" value="Matematika"> Matematika</label>
+    <label><input type="checkbox" value="Informatika"> Informatika</label>
+    <label><input type="checkbox" value="Dasar Dasar Teknik Komputer Jaringan dan Telekomunikasi"> DDTKJT</label>
+    <label><input type="checkbox" value="Pendidikan Agama Islam dan Budi Pekerti"> PAI & BP</label>
+    <label><input type="checkbox" value="Pendidikan Pancasila dan Kewarganegaraan"> PPKn</label>
+    <label><input type="checkbox" value="Ilmu Pengetahuan Alam dan Sosial"> IPAS</label>
+    <label><input type="checkbox" value="Bimbingan dan Konseling"> BK</label>
+    <label><input type="checkbox" value="Seni Budaya"> Seni Budaya</label>
+    <label><input type="checkbox" value="Sejarah Indonesia"> Sejarah</label>
+    <label><input type="checkbox" value="PJOK"> PJOK</label>
+    <label><input type="checkbox" value="Upacara">Upacara</label>
+    <label><input type="checkbox" value="Dasar - Dasar Teknik Komputer Jaringan dan Telekomunikasi">Dasar Dasar Teknik Komputer Jaringan dan Telekomunikasi</label>
+  </div>
+
+  <button type="submit">Simpan Penanda</button>
+</form>
+
+  <script>
+  const form = document.getElementById('markForm');
+  const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+  const daySelect = document.getElementById('day');
+
+  // Load saved subjects for selected day
+  daySelect.addEventListener('change', () => {
+    const day = daySelect.value;
+    const data = JSON.parse(localStorage.getItem("markedSubjectsByDay")) || {};
+    const subjects = data[day] || [];
+
+    checkboxes.forEach(cb => {
+      cb.checked = subjects.includes(cb.value);
+    });
+  });
+
+  // Trigger change to initialize
+  daySelect.dispatchEvent(new Event('change'));
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const selectedSubjects = [];
+    checkboxes.forEach(cb => {
+      if (cb.checked) selectedSubjects.push(cb.value);
+    });
+
+    const day = daySelect.value;
+    const data = JSON.parse(localStorage.getItem("markedSubjectsByDay")) || {};
+    data[day] = selectedSubjects;
+
+    localStorage.setItem("markedSubjectsByDay", JSON.stringify(data));
+    alert(`Penandaan pelajaran untuk hari ${day} berhasil disimpan!`);
+  });
+</script>
+</body>
+</html>
